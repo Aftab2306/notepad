@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Simple Notepad</title>
+
+    <style>
+        /* Body Design */
+        body 
+        {
+            font-family: Arial, sans-serif;
+            background-color: lightyellow;
+            margin: 20px;
+        }
+
+        /* Heading */
+        h1 
+        {
+            text-align: center;
+            color: green;
+        }
+
+        /* Toolbar */
+        .toolbar 
+        {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* Buttons */
+        button 
+        {
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Editor Area */
+        #editor 
+        {
+            width: 90%;
+            height: 500px;
+            margin: auto;
+            display: block;
+
+            border: 2px solid black;
+            background-color: white;
+
+            padding: 10px;
+            overflow-y: auto;
+
+            font-size: 18px;
+        }
+
+        /* Font Size Box */
+        select 
+        {
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>My Notepad</h1>
+
+    <div class="toolbar">
+
+        <!-- New File -->
+        <button onclick="newFile()">New</button>
+
+        <!-- Open File -->
+        <input type="file" id="fileInput">
+
+        <!-- Save File -->
+        <button onclick="saveFile()">Save</button>
+
+        <br><br>
+
+        <!-- Text Formatting -->
+        <button onclick="makeBold()"><b>B</b></button> <!-- Bold -->
+
+        <button onclick="makeItalic()"><i>I</i></button> <!-- Italic -->
+
+        <button onclick="makeUnderline()"><u>U</u></button> <!-- Underline -->
+
+        <!-- Font Size -->
+        <select onchange="changeSize(this.value)">
+            <option value="3">Normal</option>
+            <option value="4">Large</option>
+            <option value="5">Extra Large</option>
+            <option value="6">Big</option>
+            <option value="7">Very Big</option>
+        </select>
+
+        <!-- Clear -->
+        <button onclick="clearEditor()">Clear</button>
+
+    </div>
+
+    <!-- Editable Area -->
+    <div id="editor" contenteditable="true">    <!--contenteditable="true" લખેલું હોવાથી Browser તેને editable બનાવી દે છે.-->
+        Type Here...
+    </div>
+
+    <script>
+
+        /* =====================================
+           NEW FILE
+        ===================================== */
+        function newFile() 
+        {
+            let result = confirm("Create New File?");
+
+            if (result) 
+            {
+                document.getElementById("editor").innerHTML = "";
+            }
+        }
+
+        /* =====================================
+           SAVE FILE
+        ===================================== */
+        function saveFile() 
+        {
+            let text = document.getElementById("editor").innerText;
+
+            let blob = new Blob([text], { type: "text/plain" });
+
+            let a = document.createElement("a");
+
+            a.href = URL.createObjectURL(blob);
+
+            a.download = "MyFile.txt";
+
+            a.click();
+        }
+
+        /* =====================================
+           OPEN FILE
+        ===================================== */
+        document.getElementById("fileInput")
+            .addEventListener("change", function (event) 
+            {
+                let file = event.target.files[0];
+
+                if (!file) 
+                {
+                    return;
+                }
+
+                let reader = new FileReader();
+
+                reader.onload = function (e) 
+                {
+                    document.getElementById("editor")
+                        .innerText = e.target.result;
+                };
+
+                reader.readAsText(file);
+            });
+
+        /* =====================================
+           BOLD
+        ===================================== */
+        function makeBold() 
+        {
+            document.execCommand("bold");
+        }
+
+        /* =====================================
+           ITALIC
+        ===================================== */
+        function makeItalic() 
+        {
+            document.execCommand("italic");
+        }
+
+        /* =====================================
+           UNDERLINE
+        ===================================== */
+        function makeUnderline() 
+        {
+            document.execCommand("underline");
+        }
+
+        /* =====================================
+           FONT SIZE
+        ===================================== */
+        function changeSize(size) 
+        {
+            document.execCommand("fontSize", false, size);
+        }
+
+        /* =====================================
+           CLEAR ALL
+        ===================================== */
+        function clearEditor() 
+        {
+            let result =
+                confirm("Clear All Text?");
+
+            if (result) 
+            {
+                document.getElementById("editor")
+                    .innerHTML = "";
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
